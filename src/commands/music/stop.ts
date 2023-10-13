@@ -15,8 +15,6 @@ module.exports = {
             } else {
                 await interaction.reply({ content: "You must be an administrator to use this command" });
             }
-        } catch (e) {
-            console.log(e);
-        }
+        } catch (e) {}
     }
 }

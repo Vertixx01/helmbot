@@ -28,5 +28,5 @@ process.on("uncaughtException", (err) => {
 // 	.then(() => console.log('Successfully deleted all application commands.'))
 // 	.catch(console.error);
 loadEvents(client);
-client.on('error', (err) => console.error(err));
+client.on("error", () => { client.login(process.env.TOKEN) });
 client.login(process.env.TOKEN);

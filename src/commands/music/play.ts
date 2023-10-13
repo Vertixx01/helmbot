@@ -66,7 +66,7 @@ module.exports = {
                                 { name: `**Bitrate**`, value: `${voiceChannel.bitrate / 1000}kbps`, inline: true },
                             )
                             .setFooter({
-                            text: status(queue),
+                                text: status(queue),
                                 iconURL: interaction.user.displayAvatarURL(),
                             })
                             .setThumbnail(queue.songs[queue.songs.length - 1].thumbnail)
@@ -149,27 +149,38 @@ module.exports = {
                             ]
                         });
                     } else {
-                        if (skipVotes.data.includes(i.user.id as any)) {
+                        if (member.permissions.has("Administrator")) {
                             await i.deferReply();
-                            i.followUp({
+                            await i.followUp({
                                 embeds: [new EmbedBuilder()
                                     .setColor(Colors.Green)
-                                    .setDescription("You already voted to skip this song")
+                                    .setDescription("Skipped the song")
                                 ],
                             });
+                            client.music.skip(interaction);
                         } else {
-                            skipVotes.data.push(i.user.id as any);
-                            console.log(`Skip Votes: ${skipVotes.data.length}/${vccount}`)
-                            await i.deferReply();
-                            i.followUp({
-                                embeds: [new EmbedBuilder()
-                                    .setColor(Colors.Green)
-                                    .setDescription(`You voted to skip this song. ${skipVotes.data.length}/${vccount}`)
-                                ]
-                            });
-                            if (skipVotes.data.length >= vccount) {
-                                client.music.skip(interaction);
-                                await client.db.supabase.from("music").update({ votes: [], vc_count: vccount }).then();
+                            if (skipVotes.data.includes(i.user.id as any)) {
+                                await i.deferReply();
+                                i.followUp({
+                                    embeds: [new EmbedBuilder()
+                                        .setColor(Colors.Green)
+                                        .setDescription("You already voted to skip this song")
+                                    ],
+                                });
+                            } else {
+                                skipVotes.data.push(i.user.id as any);
+                                console.log(`Skip Votes: ${skipVotes.data.length}/${vccount}`)
+                                await i.deferReply();
+                                i.followUp({
+                                    embeds: [new EmbedBuilder()
+                                        .setColor(Colors.Green)
+                                        .setDescription(`You voted to skip this song. ${skipVotes.data.length}/${vccount}`)
+                                    ]
+                                });
+                                if (skipVotes.data.length >= vccount) {
+                                    client.music.skip(interaction);
+                                    await client.db.supabase.from("music").update({ votes: [], vc_count: vccount }).then();
+                                }
                             }
                         }
                     }
@@ -236,18 +247,6 @@ module.exports = {
                     }
                 }
             });
-        } catch (e) {
-            console.log(e.stack ? e.stack : e)
-            await interaction.deferReply();
-            await interaction.reply({
-                content: `An error occured: \`\`\`${e}\`\`\``,
-                embeds: [
-                    new EmbedBuilder()
-                        .setColor("Red")
-                        .setDescription(`\`\`\`${e}\`\`\``)
-                ],
-
-            })
-        }
+        } catch (e) {}
     }
 };
