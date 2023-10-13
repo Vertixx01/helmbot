@@ -11,7 +11,7 @@ async function loadCommands(client: CustomClient) {
 
     const files = await loadFiles("src/commands");
     for (const file of files) {
-        const command = await import(file);
+        const command: any = await import(file);
         if (!command.data.name) return failed++;
 
         commands.set(command.data.name, command);

@@ -19,6 +19,10 @@ const client = new CustomClient({
         Partials.Reaction,
     ],
 });
+
+process.on("uncaughtException", (err) => {
+    console.error(err);
+});
 // const rest = new REST().setToken(process.env.TOKEN);
 // rest.put(Routes.applicationCommands("859693583719858196"), { body: [] })
 // 	.then(() => console.log('Successfully deleted all application commands.'))

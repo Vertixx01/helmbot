@@ -4,6 +4,7 @@ import { SpotifyPlugin } from "@distube/spotify";
 import { YtDlpPlugin } from "@distube/yt-dlp";
 import { DisTube } from "distube";
 import Interactions from "../../src/systems/messageInteractions";
+import DB from "../backend/db";
 
 class CustomClient extends Client {
   color = Colors.Blurple;
@@ -12,6 +13,7 @@ class CustomClient extends Client {
   buttons = new Collection();
   selectMenus = new Collection();
   interactions = new Interactions();
+  db = new DB();
   music = new DisTube(this, {
     emitNewSongOnly: true,
     leaveOnFinish: true,
