@@ -19,7 +19,11 @@ module.exports = {
 
         //if (!client.config.devs.includes(user.id)) return await client.interactions.reply(interaction, "You do not have permission to use this command", true);
 
-
-        command.execute(interaction, client);
+        try {
+            await command.execute(interaction, client);
+        } catch (error) {
+            console.error(error);
+            await client.interactions.reply(interaction, "An error occured while executing this command", true);
+        }
     }
 }

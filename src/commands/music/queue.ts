@@ -4,9 +4,11 @@ import CustomClient from "../../classes/customClient";
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("queue")
-        .setDescription("Shows the queue of songs"),
+        .setDescription("Shows the queue of songs")
+        .addBooleanOption(option => option.setName("dropdown").setDescription("Whether to use a dropdown or not").setRequired(true)),
     async execute(interaction: ChatInputCommandInteraction, client: CustomClient) {
         let queue = client.music.getQueue(interaction);
+        let dropdownoption = interaction.options.getBoolean("dropdown");
         if (!queue) return interaction.reply({ embeds: [new EmbedBuilder().setColor("Red").setDescription("There is no queue")] });
         const menu = new ActionRowBuilder()
         const dropdown = new StringSelectMenuBuilder()
@@ -39,12 +41,12 @@ module.exports = {
                     }
                 ])
             });
-            const row = menu.addComponents([ dropdown ])
             embed.setDescription(`Now Playing: [${queue.songs[0].name}](${queue.songs[0].url}) \`[${queue.songs[0].formattedDuration}]\`\n\n${embedsc.join("\n")}`)
-            interaction.reply({ embeds: [embed], components: [{
+            if (dropdownoption) await interaction.reply({ embeds: [embed], components: [{
                 type: 1,
                 components: [ dropdown ]
             }] });
+            else await interaction.reply({ embeds: [embed] });
 
             const filter = (i) => i.user.id === interaction.user.id && i.isStringSelectMenu();
 
